@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transportes MASCH | Cotice su viaje</title>
+    <style>
+        :root {
+            --isuzu-white: #f4f4f4; /* Color cabina */
+            --wood-brown: #8B4513; /* Color cajón de madera */
+            --wood-light: #A0522D;
+            --bumper-black: #2c2c2c; /* Color bumper */
+            --amber-signal: #FFBF00; /* Direccionales */
+            --brake-red: #cc3333; /* Luces de freno */
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--isuzu-white);
+            color: var(--bumper-black);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        /* Header inspirado en el cajón de madera */
+        header {
+            background: repeating-linear-gradient(
+                45deg,
+                var(--wood-brown),
+                var(--wood-brown) 10px,
+                var(--wood-light) 10px,
+                var(--wood-light) 20px
+            );
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 5px solid var(--bumper-black);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        .logo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        /* Simulación de Logo CSS */
+        .masch-logo {
+            font-size: 2rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            background-color: var(--isuzu-white);
+            color: var(--bumper-black);
+            padding: 10px 20px;
+            border: 3px solid var(--bumper-black);
+            border-radius: 4px;
+            display: inline-block;
+            box-shadow: 5px 5px 0px var(--wood-brown);
+        }
+
+        h1 { margin: 10px 0 0 0; font-size: 1.5rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+        .whatsapp-link { color: #25D366; font-weight: bold; text-decoration: none; background: white; padding: 5px 10px; border-radius: 20px; margin-top: 10px; display: inline-block; }
+
+        /* Contenedor Principal */
+        .container {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-top: 5px solid var(--amber-signal);
+        }
+
+        h2 { color: var(--wood-brown); border-bottom: 2px solid var(--isuzu-white); padding-bottom: 10px; }
+
+        /* Estilos del Formulario */
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-weight: 600; margin-bottom: 5px; color: #444; }
+        input[type="text"], input[type="number"], input[type="email"], input[type="tel"], textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+        input:focus, textarea:focus { border-color: var(--wood-brown); outline: none; }
+
+        /* Checkbox Grid */
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 4px;
+            border: 1px solid #eee;
+        }
+        .checkbox-item { display: flex; align-items: center; font-size: 0.9rem; }
+        .checkbox-item input { margin-right: 10px; width: 18px; height: 18px; accent-color: var(--wood-brown); }
+
+        #otro-detalle-group { display: none; margin-top: 10px; }
+
+        /* Botón Principal */
+        .btn-submit {
+            background-color: var(--amber-signal);
+            color: var(--bumper-black);
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            width: 100%;
+            border-radius: 4px;
+            cursor: pointer;
+            text-transform: uppercase;
+            box-shadow: 0 4px 0 #cc9900;
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+        .btn-submit:active { transform: translateY(4px); box-shadow: none; }
+        .btn-submit:hover { background-color: #ffd633; }
+
+        /* Modales */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .modal-content {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            border-top: 5px solid var(--wood-brown);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .summary-list { list-style: none; padding: 0; margin: 15px 0; background: #f4f4f4; padding: 15px; border-radius: 4px; font-size: 0.95rem; }
+        .summary-list li { margin-bottom: 8px; border-bottom: 1px solid #ddd; padding-bottom: 4px; }
+        .summary-list strong { color: var(--wood-brown); }
+
+        /* Botones del Modal */
+        .modal-actions { display: flex; gap: 10px; margin-top: 20px; }
+        .btn-confirm { background-color: #25D366; color: white; flex: 1; padding: 12px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 1rem; }
+        .btn-edit { background-color: var(--brake-red); color: white; flex: 1; padding: 12px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 1rem; }
+        .btn-close-final { background-color: var(--bumper-black); color: white; width: 100%; padding: 12px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; margin-top: 15px; }
+
+        footer { text-align: center; padding: 20px; color: #666; font-size: 0.8rem; margin-top: 40px; }
+
+        @media (max-width: 600px) {
+            .checkbox-group { grid-template-columns: 1fr; }
+            .masch-logo { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo-container">
+        <div class="masch-logo">Transportes MASCH</div>
+    </div>
+    <div style="font-size: 0.9rem; margin-top: 5px; opacity: 0.9;">Calidad y Fuerza en cada viaje</div>
+    <a href="https://wa.me/50699998855" class="whatsapp-link" target="_blank">WhatsApp: +506 9999-8855</a>
+</header>
+
+<div class="container">
+    <h2>Cotice viaje con nosotros</h2>
+    <p style="font-size: 0.9rem; color: #666; margin-bottom: 20px;">Complete el formulario y le enviaremos su cotización directamente por WhatsApp.</p>
+
+    <form id="quoteForm">
+        <div class="form-group">
+            <label>Nombre Completo:</label>
+            <input type="text" id="nombre" required placeholder="Ej: Juan Pérez">
+        </div>
+        <div class="form-group">
+            <label>Teléfono:</label>
+            <input type="tel" id="telefono" required placeholder="Ej: 8888-8888">
+        </div>
+        <div class="form-group">
+            <label>Correo Electrónico:</label>
+            <input type="email" id="email" required placeholder="Ej: juan@correo.com">
+        </div>
+
+        <hr style="border: 0; border-top: 1px dashed #ccc; margin: 25px 0;">
+
+        <div class="form-group">
+            <label>Punto de Recolección:</label>
+            <input type="text" id="origen" required placeholder="Ej: Dirección, del Parque 550m Sur, 5ta casa verde">
+        </div>
+
+        <div class="form-group">
+            <label>Punto de Entrega:</label>
+            <input type="text" id="destino" required placeholder="Ej: Dirección, Contiguo a Escuela San Rafael, casa café">
+        </div>
+
+        <div class="form-group">
+            <label>Distancia Aproximada (Km):</label>
+            <input type="number" id="distancia" required placeholder="Ej: 15">
+        </div>
+
+        <div class="form-group">
+            <label>Tipo de carga (Seleccione todo lo que aplique):</label>
+            <div class="checkbox-group">
+                <label class="checkbox-item"><input type="checkbox" name="carga" value="Muebles"> Muebles</label>
+                <label class="checkbox-item"><input type="checkbox" name="carga" value="Sillas"> Sillas</label>
+                <label class="checkbox-item"><input type="checkbox" name="carga" value="Electrodomésticos"> Electrodomésticos</label>
+                <label class="checkbox-item"><input type="checkbox" name="carga" value="Juego de Sala"> Juego de Sala</label>
+                <label class="checkbox-item"><input type="checkbox" name="carga" value="Juego de Comedor"> Juego de Comedor</label>
+                <label class="checkbox-item"><input type="checkbox" name="carga" value="Sillones"> Sillones</label>
+                <label class="checkbox-item"><input type="checkbox" name="carga" value="Pantalla Plana"> Pantalla Plana</label>
+                <label class="checkbox-item"><input type="checkbox" name="carga" value="Refrigeradora"> Refrigeradora</label>
+                <label class="checkbox-item"><input type="checkbox" name="carga" value="Centro de Lavado"> Centro de Lavado</label>
+                <label class="checkbox-item"><input type="checkbox" name="carga" value="Secadora"> Secadora</label>
+                <label class="checkbox-item"><input type="checkbox" name="carga" value="Lavadora Semiautomática"> Lavadora Semiaut.</label>
+                <label class="checkbox-item"><input type="checkbox" name="carga" value="Lavadora Automática"> Lavadora Auto.</label>
+                <label class="checkbox-item"><input type="checkbox" name="carga" value="Llantas"> Llantas</label>
+                <label class="checkbox-item"><input type="checkbox" name="carga" value="Láminas de Zinc"> Láminas de Zinc</label>
+                <label class="checkbox-item"><input type="checkbox" name="carga" value="Materiales Construcción"> Mat. Construcción</label>
+                <label class="checkbox-item"><input type="checkbox" name="carga" value="Motocicleta 125cc"> Motocicleta 125cc</label>
+                <label class="checkbox-item"><input type="checkbox" name="carga" value="Bicimoto"> Bicimoto</label>
+                <label class="checkbox-item"><input type="checkbox" name="carga" value="Madera"> Madera</label>
+                <label class="checkbox-item"><input type="checkbox" name="carga" value="Mudanza Completa"> Mudanza Completa</label>
+                <label class="checkbox-item"><input type="checkbox" name="carga" value="Animales"> Animales</label>
+                <label class="checkbox-item"><input type="checkbox" id="check-otros" name="carga" value="Otros"> Otros</label>
+            </div>
+            
+            <div id="otro-detalle-group">
+                <input type="text" id="otro-texto" placeholder="Especifique los otros artículos...">
+            </div>
+        </div>
+
+        <button type="submit" class="btn-submit">Enviar Solicitud de Cotización</button>
+    </form>
+</div>
+
+<footer>
+    <p>&copy; 2024 Transportes MASCH. Todos los derechos reservados.</p>
+</footer>
+
+<div class="modal-overlay" id="modalResumen">
+    <div class="modal-content">
+        <h3 style="color: var(--wood-brown); margin-top:0;">Resumen de Cotización</h3>
+        <p>Por favor verifique que los datos sean correctos:</p>
+        <ul class="summary-list" id="resumenData">
+            </ul>
+        <h4 style="text-align: center;">¿Está todo bien?</h4>
+        <div class="modal-actions">
+            <button class="btn-edit" onclick="cerrarModal('modalResumen')">No, Editar</button>
+            <button class="btn-confirm" onclick="confirmarEnvio()">SÍ, Enviar</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="modalExito">
+    <div class="modal-content" style="text-align: center;">
+        <div style="font-size: 3rem; color: #25D366;">&#10004;</div>
+        <h3 style="margin-top: 10px;">¡Solicitud Enviada!</h3>
+        <p>Muchas gracias por confiar en nosotros para su transporte, será un gusto para nosotros poder servirle.</p>
+        <p style="font-size: 0.9rem; color: #555;">En breve le contactaremos.</p>
+        <button class="btn-close-final" onclick="finalizar()">Cerrar y Volver</button>
+    </div>
+</div>
+
+<script>
+    // Lógica para mostrar campo "Otros"
+    const checkOtros = document.getElementById('check-otros');
+    const inputOtros = document.getElementById('otro-detalle-group');
+
+    checkOtros.addEventListener('change', function() {
+        if(this.checked) {
+            inputOtros.style.display = 'block';
+        } else {
+            inputOtros.style.display = 'none';
+        }
+    });
+
+    // Manejo del Formulario
+    const form = document.getElementById('quoteForm');
+    let formDataObj = {};
+
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        // Recopilar checkbox
+        const checkboxes = document.querySelectorAll('input[name="carga"]:checked');
+        let cargas = [];
+        checkboxes.forEach((cb) => {
+            if(cb.value === 'Otros') {
+                const otroTexto = document.getElementById('otro-texto').value;
+                cargas.push(`Otros: ${otroTexto}`);
+            } else {
+                cargas.push(cb.value);
+            }
+        });
+
+        if(cargas.length === 0) {
+            alert("Por favor seleccione al menos un tipo de carga.");
+            return;
+        }
+
+        // Guardar datos temporalmente
+        formDataObj = {
+            cotizacionID: 'COT-' + Math.floor(Math.random() * 10000) + '-' + new Date().getDate(),
+            nombre: document.getElementById('nombre').value,
+            telefono: document.getElementById('telefono').value,
+            email: document.getElementById('email').value,
+            origen: document.getElementById('origen').value,
+            destino: document.getElementById('destino').value,
+            distancia: document.getElementById('distancia').value,
+            carga: cargas.join(', ')
+        };
+
+        // Llenar resumen
+        const lista = document.getElementById('resumenData');
+        lista.innerHTML = `
+            <li><strong>ID Cotización:</strong> ${formDataObj.cotizacionID}</li>
+            <li><strong>Cliente:</strong> ${formDataObj.nombre}</li>
+            <li><strong>Teléfono:</strong> ${formDataObj.telefono}</li>
+            <li><strong>Origen:</strong> ${formDataObj.origen}</li>
+            <li><strong>Destino:</strong> ${formDataObj.destino}</li>
+            <li><strong>Distancia:</strong> ${formDataObj.distancia} km</li>
+            <li><strong>Carga:</strong> ${formDataObj.carga}</li>
+        `;
+
+        // Mostrar Modal
+        document.getElementById('modalResumen').style.display = 'flex';
+    });
+
+    function cerrarModal(id) {
+        document.getElementById(id).style.display = 'none';
+    }
+
+    function confirmarEnvio() {
+        // Cerrar modal resumen
+        cerrarModal('modalResumen');
+
+        // Construir mensaje de WhatsApp
+        const mensaje = `Hola Transportes MASCH, solicito cotización:%0A
+*ID:* ${formDataObj.cotizacionID}%0A
+*Nombre:* ${formDataObj.nombre}%0A
+*Teléfono:* ${formDataObj.telefono}%0A
+*Email:* ${formDataObj.email}%0A
+-----------------------%0A
+*Origen:* ${formDataObj.origen}%0A
+*Destino:* ${formDataObj.destino}%0A
+*Distancia:* ${formDataObj.distancia} km%0A
+*Carga:* ${formDataObj.carga}`;
+
+        // Abrir WhatsApp
+        const numeroWhatsApp = "50699998855";
+        window.open(`https://wa.me/${numeroWhatsApp}?text=${mensaje}`, '_blank');
+
+        // Mostrar Modal Éxito
+        document.getElementById('modalExito').style.display = 'flex';
+    }
+
+    function finalizar() {
+        cerrarModal('modalExito');
+        form.reset();
+        inputOtros.style.display = 'none';
+        window.scrollTo(0, 0);
+    }
+</script>
+
+</body>
+</html>
