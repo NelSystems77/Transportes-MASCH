@@ -47,18 +47,16 @@
             margin-bottom: 10px;
         }
 
-        /* Simulación de Logo CSS */
-        .masch-logo {
-            font-size: 2rem;
-            font-weight: 900;
-            text-transform: uppercase;
-            background-color: var(--isuzu-white);
-            color: var(--bumper-black);
-            padding: 10px 20px;
-            border: 3px solid var(--bumper-black);
+        /* --- ESTILO PARA TU LOGO (IMAGEN) --- */
+        .masch-logo-img {
+            max-width: 250px; /* Tamaño máximo del logo */
+            width: 100%;      /* Responsivo en móviles */
+            height: auto;
+            border: 3px solid var(--bumper-black); /* Borde negro del camión */
             border-radius: 4px;
-            display: inline-block;
-            box-shadow: 5px 5px 0px var(--wood-brown);
+            box-shadow: 5px 5px 0px var(--wood-brown); /* Sombra 3D */
+            background-color: var(--isuzu-white); /* Fondo por si es PNG transparente */
+            padding: 5px;
         }
 
         h1 { margin: 10px 0 0 0; font-size: 1.5rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
@@ -160,7 +158,6 @@
 
         @media (max-width: 600px) {
             .checkbox-group { grid-template-columns: 1fr; }
-            .masch-logo { font-size: 1.5rem; }
         }
     </style>
 </head>
@@ -168,10 +165,10 @@
 
 <header>
     <div class="logo-container">
-        <div class="masch-logo">Transportes MASCH</div>
+        <img src="logo.jpg" alt="Logo Transportes MASCH" class="masch-logo-img">
     </div>
     <div style="font-size: 0.9rem; margin-top: 5px; opacity: 0.9;">Calidad y Fuerza en cada viaje</div>
-    <a href="https://wa.me/50699998855" class="whatsapp-link" target="_blank">WhatsApp: +506 9999-8855</a>
+    <a href="https://wa.me/50687409343" class="whatsapp-link" target="_blank">WhatsApp: +506 8740-9343</a>
 </header>
 
 <div class="container">
